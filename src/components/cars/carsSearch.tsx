@@ -30,7 +30,7 @@ function FormSearchCar() {
     // setCars(filteredCars);
 
     try {
-      const response = await axios.post("http://localhost:3002/api/v1/filtered-cars", filterCriteria);
+      const response = await axios.post("https://resulting-roby-synrgy7-faza-1307d6b4.koyeb.app/api/v1/filtered-cars", filterCriteria);
       setCars(response.data);
     } catch (error: any) {
       console.error("Error filtering cars:", error.message);
@@ -40,7 +40,7 @@ function FormSearchCar() {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const response = await axios.get("http://localhost:3002/api/v1/cars");
+        const response = await axios.get("https://resulting-roby-synrgy7-faza-1307d6b4.koyeb.app/api/v1/cars");
         setCars(response.data);
       } catch (error) {
         console.error("Error fetching cars:", error);
