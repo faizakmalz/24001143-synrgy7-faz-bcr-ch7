@@ -13,7 +13,7 @@ const Header = () => {
     const handleLogout =  () => {
       localStorage.removeItem('token');
       axiosInstance.post('/logout');
-      navigate('/home');
+      navigate('/');
     };
 
     

@@ -14,7 +14,7 @@ export default function CarCards () {
     useEffect(() => {
         const fetchCars = async () => {
           try {
-            const response = await axiosInstance.get("/cars");
+            const response = await axiosInstance.get('/api/v1/cars');
             setCars(response.data);
           } catch (error) {
             console.error("Error fetching cars:", error);
@@ -30,7 +30,7 @@ export default function CarCards () {
 
       const handleDelele = async (carId: any) => {
         try {
-          await axiosInstance.delete(`/cars/${carId}`);
+          await axiosInstance.delete(`/api/v1/cars/${carId}`);
           setCars(cars.filter(car => car.id !== carId));
           console.log('Car deleted successfully');
       } catch (error) {

@@ -14,5 +14,8 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    "camelcase": "off",
+    "no-unused-vars": "warn",
+    "no-useless-constructor": "error"
   },
 }

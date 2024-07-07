@@ -144,7 +144,7 @@ export function CarsTable() {
     useEffect(() => {
         const fetchCars = async () => {
           try {
-            const response = await axiosInstance.get("/cars");
+            const response = await axiosInstance.get("api/v1/cars");
             setCars(response.data);
           } catch (error) {
             console.error("Error fetching cars:", error);
