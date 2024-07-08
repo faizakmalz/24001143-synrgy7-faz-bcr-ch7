@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
+import Modal from 'react-modal';
 import axiosInstance from "../../utils/axios";
 import Car from "../../types/types";
 import { useNavigate } from "react-router";
 import { useSearchContext } from "../../context/searchContext";
 
+Modal.setAppElement('#root');
+
 export default function CarCards () {
     const { searchQuery } = useSearchContext(); // Access searchQuery from context
 
     const [cars, setCars] = useState<Car[]>([]);
-    const navigate = useNavigate()
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [carToDelete, setCarToDelete] = useState<Car | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCars = async () => {
@@ -24,24 +28,37 @@ export default function CarCards () {
         fetchCars();
       }, []);
 
-      const handleEditCar = (carId: any) => {
+    const handleEditCar = (carId: any) => {
         navigate(`/edit-car/${carId}`);
-      };
+    };
 
-      const handleDelele = async (carId: any) => {
-        try {
-          await axiosInstance.delete(`/api/v1/cars/${carId}`);
-          setCars(cars.filter(car => car.id !== carId));
-          console.log('Car deleted successfully');
-      } catch (error) {
-          console.error('Error deleting car:', error);
-      }      }
+    const openDeleteModal = (car: Car) => {
+        setCarToDelete(car);
+        setIsModalOpen(true);
+    };
 
-      const filteredCars = cars.filter((car) =>
+    const closeDeleteModal = () => {
+        setIsModalOpen(false);
+        setCarToDelete(null);
+    };
+
+    const handleDelete = async () => {
+        if (carToDelete) {
+            try {
+                await axiosInstance.delete(`/api/v1/cars/${carToDelete.id}`);
+                setCars(cars.filter(car => car.id !== carToDelete.id));
+                console.log('Car deleted successfully');
+            } catch (error) {
+                console.error('Error deleting car:', error);
+            }
+            closeDeleteModal();
+        }
+    };
+
+    const filteredCars = cars.filter((car) =>
         car.model && car.model.toLowerCase().includes(searchQuery.toLowerCase())
     );
-      
-    
+
     return (
         <div className="w-full mx-auto mb-52 ">
             {(cars.length > 0)? (
@@ -64,7 +81,7 @@ export default function CarCards () {
 
                         <div className="mt-3 flex items-center gap-3 justify-center">
                             <button onClick={() => handleEditCar(car.id)} className="p-3 rounded-md border-red-700 border text-red-700 w-32">Edit</button>
-                            <button onClick={() => handleDelele(car.id)} className="p-3 rounded-md text-white bg-green-500 w-32">Delete</button>
+                            <button onClick={() => openDeleteModal(car)} className="p-3 rounded-md text-white bg-green-500 w-32">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -77,8 +94,20 @@ export default function CarCards () {
         </div>
       )}
 
+            <Modal 
+                isOpen={isModalOpen} 
+                onRequestClose={closeDeleteModal}
+                contentLabel="Confirm Delete"
+                className="Modal"
+                overlayClassName="Overlay"
+            >
+                <h2>Confirm Delete</h2>
+                <p>Are you sure you want to delete this car?</p>
+                <div className="flex gap-4 mt-4">
+                    <button onClick={handleDelete} className="p-3 rounded-md text-white bg-red-500">Yes, Delete</button>
+                    <button onClick={closeDeleteModal} className="p-3 rounded-md border-gray-700 border text-gray-700">Cancel</button>
+                </div>
+            </Modal>
         </div>
-
     )
-
 }
