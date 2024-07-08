@@ -11,7 +11,7 @@ type CarData = {
   transmission: string;
   type: string;
   year: string;
-  image: FileList;
+  image: string;
 };
 
 function AddCarForm() {
